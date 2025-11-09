@@ -190,13 +190,11 @@ class Midjourney extends Controller
         if (!empty($custom)) {
             return $custom;
         }
-
         $configured = config('midjourney.callback_url');
-        if (empty($configured)) {
-            throw new HttpResponseException($this->error('未配置回调地址'));
+        if (!empty($configured)) {
+            return $configured;
         }
-
-        return $configured;
+        return request()->domain() . '/api/task/callback';
     }
 
     protected function requestData(Request $request)

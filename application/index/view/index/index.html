@@ -14,12 +14,8 @@
 
     <section class="panel">
         <h2>API 设置</h2>
-        <p>异步回调地址：<code>{$callbackUrl|default='未配置'}</code></p>
-        {if condition="!$callbackConfigured"}
-        <p class="alert">请在配置文件中设置 <code>midjourney.callback_url</code>，该地址会在任务提交时一并发送给 Midjourney 服务器用于回调。</p>
-        {else/}
+        <p>异步回调地址：<code>{$callbackUrl|default=''}</code></p>
         <p>请在 Midjourney 管理后台配置该回调地址以获取最新任务状态。</p>
-        {/if}
     </section>
 
     <section class="panel">

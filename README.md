@@ -28,7 +28,7 @@
    请在 `.env` 中配置：
 
    - `midjourney.token`：Midjourney API Token；
-   - `midjourney.callback_url`：公网可访问的回调地址（例如 `https://your-domain.com/api/task/callback`）。该地址会在提交任务时一并发送给 Midjourney，由其服务器在任务状态变化时回调；
+   - `midjourney.callback_url`：公网可访问的回调地址（例如 `https://your-domain.com/api/task/callback`）；
    - 若需要，可设置 `database.database` 指向 MySQL 或 SQLite 文件。
 
 3. **执行数据库迁移**（需安装 `topthink/think-migration` 插件）
