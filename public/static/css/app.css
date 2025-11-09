@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: #f4f6fb;
+    color: #1f1f1f;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+.panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+    margin-bottom: 24px;
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.advanced {
+    display: none;
+}
+
+.form-row.inline {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #2563eb;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
+
+.form-row label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.form-row.buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.form-row button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.form-row button:hover {
+    background: #1d4ed8;
+}
+
+#task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#task-table th,
+#task-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+#task-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.prompt {
+    max-height: 100px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #1f2937;
+    display: inline-block;
+    font-size: 12px;
+}
+
+.status-done {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-failed {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-progress {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.table-image {
+    width: 120px;
+}
+
+@media (max-width: 768px) {
+    .form-row.buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #task-table thead {
+        display: none;
+    }
+
+    #task-table tr {
+        display: block;
+        margin-bottom: 16px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 12px;
+    }
+
+    #task-table td {
+        display: flex;
+        justify-content: space-between;
+        border: none;
+        padding: 6px 0;
+    }
+
+    #task-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+        margin-right: 8px;
+    }
+}

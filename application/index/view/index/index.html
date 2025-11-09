@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Midjourney 任务控制台</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Midjourney 任务控制台</h1>
+        <p>基于 ThinkPHP 5.0.24 的图像生成与管理平台</p>
+    </header>
+
+    <section class="panel">
+        <h2>API 设置</h2>
+        <p>异步回调地址：<code>{$callbackUrl|default=''}</code></p>
+        <p>请在 Midjourney 管理后台配置该回调地址以获取最新任务状态。</p>
+    </section>
+
+    <section class="panel">
+        <h2>创建新任务</h2>
+        <form id="task-form">
+            <div class="form-row">
+                <label for="action">操作类型</label>
+                <select id="action" name="action" required>
+                    <option value="IMAGINE">图像生成</option>
+                    <option value="DESCRIBE">图生文 Describe</option>
+                    <option value="UPSCALE">放大 (需提供任务 ID 和索引)</option>
+                    <option value="VARIATION">变换 (需提供任务 ID 和索引)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="prompt">提示词 / 图像链接</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="请输入英文或中文提示词，支持 :: 权重" required></textarea>
+            </div>
+            <div class="form-row inline">
+                <button type="button" id="advanced-toggle" class="link-button">显示高级选项</button>
+            </div>
+            <div class="advanced" id="advanced-options" data-open="false">
+                <div class="form-row">
+                    <label for="task_id">原任务 ID（用于放大、变换）</label>
+                    <input type="text" id="task_id" name="task_id" placeholder="例如：93c9d820-xxxx" />
+                </div>
+                <div class="form-row">
+                    <label for="index">图片序号 (1-4)</label>
+                    <input type="number" id="index" name="index" min="1" max="4" />
+                </div>
+                <div class="form-row">
+                    <label for="notify_hook">自定义回调地址</label>
+                    <input type="url" id="notify_hook" name="notify_hook" placeholder="可覆盖默认回调地址" />
+                </div>
+                <div class="form-row">
+                    <label for="options">自定义参数(JSON)</label>
+                    <textarea id="options" name="options" rows="3" placeholder='{"aspect_ratio":"16:9"}'></textarea>
+                </div>
+            </div>
+            <div class="form-row buttons">
+                <button type="submit">提交任务</button>
+                <button type="button" id="refresh-btn">刷新列表</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>任务列表</h2>
+        <table id="task-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>操作</th>
+                <th>提示词</th>
+                <th>状态</th>
+                <th>进度</th>
+                <th>图片</th>
+                <th>失败原因</th>
+                <th>更新时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="tasks" id="task"}
+            <tr data-id="{$task.id}">
+                <td data-label="ID">{$task.task_id|default='--'}</td>
+                <td data-label="操作">{$task.action}</td>
+                <td data-label="提示词"><div class="prompt">{$task.prompt|default=''}</div></td>
+                <td data-label="状态">
+                    {php}
+                    $status = strtolower($task['status'] ?? '');
+                    $badgeClass = 'badge status-progress';
+                    $label = '进行中';
+                    if (strpos($status, 'success') !== false || strpos($status, 'finished') !== false) {
+                        $badgeClass = 'badge status-done';
+                        $label = '已完成';
+                    } elseif (strpos($status, 'fail') !== false) {
+                        $badgeClass = 'badge status-failed';
+                        $label = '失败';
+                    } elseif (empty($status)) {
+                        $badgeClass = 'badge';
+                        $label = '排队中';
+                    }
+                    {/php}
+                    <span class="{$badgeClass}">{$label}</span>
+                </td>
+                <td data-label="进度">{$task.progress|default='0%'}</td>
+                <td data-label="图片">
+                    {if condition="$task.image_url"}
+                    <a href="{$task.image_url}" target="_blank">查看</a>
+                    {else/}
+                    --
+                    {/if}
+                </td>
+                <td data-label="失败原因">
+                    {if condition="$task.fail_reason"}
+                    <div class="prompt">{$task.fail_reason}</div>
+                    {else/}
+                    --
+                    {/if}
+                </td>
+                <td data-label="更新时间">{$task.updated_at}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.5.0/dist/axios.min.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
