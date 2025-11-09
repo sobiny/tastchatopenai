@@ -1,26 +1,106 @@
-# tastchatopenai
+# Midjourney 自动化控制台 (ThinkPHP 5.0.24)
 
-测试chatopenai
+本项目基于 ThinkPHP 5.0.24 构建，整合了 [Midjourney API](https://docs-zh.mjapiapp.com/api/midjourney-api) 的图像生成、放大、变换、Describe 等能力，并提供异步回调与数据库任务管理。
 
-## MD5 GPU Brute Force
+## 功能概览
 
-使用CUDA实现的简单MD5暴力破解示例。
+- ✨ **图像生成功能**：输入 Prompt 一键提交任务。
+- 🔁 **放大 / 变换**：针对已有任务执行 Upscale 与 Variation。
+- 🖼️ **Describe 支持**：通过图片链接生成文本描述。
+- 📡 **异步回调**：实现 `/api/task/callback` 回调接口，自动更新任务状态与图片链接。
+- 📊 **任务看板**：使用 Axios 实时刷新任务列表，查看进度、失败原因等。
+- 💾 **数据库持久化**：内置 `mj_tasks` 表结构与 Phinx 迁移脚本，默认支持 SQLite。
 
-### 构建
+## 快速开始
 
-```bash
-cmake -S . -B build
-cmake --build build
+1. **安装依赖**
+
+   ```bash
+   composer install
+   ```
+
+2. **复制环境变量模板并填写**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   请在 `.env` 中配置：
+
+   - `midjourney.token`：Midjourney API Token；
+   - `midjourney.callback_url`：公网可访问的回调地址（例如 `https://your-domain.com/api/task/callback`）；
+   - 若需要，可设置 `database.database` 指向 MySQL 或 SQLite 文件。
+
+3. **执行数据库迁移**（需安装 `topthink/think-migration` 插件）
+
+   ```bash
+   php think migrate:run
+   ```
+
+4. **启动内置开发服务器**
+
+   ```bash
+   php think run
+   ```
+
+   访问 `http://127.0.0.1:8000` 即可使用可视化控制台。
+
+## 目录结构
+
+```
+├── application
+│   ├── api
+│   │   └── controller
+│   │       └── Midjourney.php        # API 控制器，封装任务提交、回调、查询
+│   ├── common
+│   │   ├── model
+│   │   │   └── MjTask.php            # 数据模型
+│   │   ├── service
+│   │   │   └── MidjourneyClient.php  # 调用 Midjourney API 的封装
+│   │   └── validate
+│   │       └── MjTaskValidate.php    # 表单校验
+│   ├── index
+│   │   ├── controller
+│   │   │   └── Index.php             # 可视化页面
+│   │   └── view
+│   │       └── index
+│   │           └── index.html        # 前端页面模板
+│   ├── config.php                    # 全局配置
+│   ├── database.php                  # 数据库配置
+│   ├── route.php                     # 路由定义
+│   └── extra
+│       └── midjourney.php            # Midjourney 配置
+├── database
+│   └── migrations
+│       └── 20240101000000_create_mj_tasks_table.php
+├── public
+│   ├── index.php                     # 入口文件
+│   └── static
+│       ├── css/app.css
+│       └── js/app.js
+└── composer.json
 ```
 
-### 运行
+## 回调示例
 
-```bash
-./build/md5_bruteforce <md5hash> <length>
+Midjourney 平台会在任务状态变化时向 `/api/task/callback` 发送 POST 请求。示例载荷：
+
+```json
+{
+  "taskId": "93c9d820-f3f4-4d8a-b2f2-xxxx",
+  "status": "SUCCESS",
+  "progress": "100%",
+  "imageUrl": "https://cdn.mjapiapp.com/.../image.png",
+  "failReason": null
+}
 ```
 
-例如:
-```bash
-./build/md5_bruteforce 5d41402abc4b2a76b9719d911017c592 5
-```
-将尝试在所有5位小写字母组合中寻找匹配`hello`的MD5值。
+控制器会根据 `taskId` 自动更新 `mj_tasks` 表中的状态、进度、图片地址及元数据。
+
+## 注意事项
+
+- 若部署在公网服务器，请确保 `public/` 目录作为 Web Server 根目录。
+- 若需要使用 MySQL，请将 `database.php` 中 `type` 改为 `mysql`，并在 `.env` 中补充连接信息。
+- 建议结合 Redis 队列实现更复杂的任务状态轮询，可扩展 `MidjourneyClient::fetchTask` 方法。
+
+欢迎根据业务需求继续扩展，如加入用户体系、任务权限控制、Webhook 签名校验等能力。
