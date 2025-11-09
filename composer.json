@@ -1,0 +1,20 @@
+{
+    "name": "local/mj-portal",
+    "description": "Midjourney automation portal built with ThinkPHP 5.0.24",
+    "type": "project",
+    "require": {
+        "topthink/framework": "5.0.24",
+        "topthink/think-migration": "^2.0",
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "application/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
