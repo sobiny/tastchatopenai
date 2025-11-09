@@ -43,19 +43,8 @@ class Midjourney extends Controller
         if (!empty($data['index'])) {
             $payload['index'] = (int) $data['index'];
         }
-        $options = $this->extractArray($data, 'options');
-        if (!empty($options)) {
-            $payload['options'] = $options;
-        }
-
-        $imageUrls = $this->normalizeImageUrls($data);
-        if (!empty($imageUrls)) {
-            $payload['imageUrlList'] = $imageUrls;
-            if (count($imageUrls) === 1) {
-                $payload['imageUrl'] = $imageUrls[0];
-            }
-        } elseif (!empty($data['image_url'])) {
-            $payload['imageUrl'] = $data['image_url'];
+        if (!empty($data['options']) && is_array($data['options'])) {
+            $payload['options'] = $data['options'];
         }
 
         $response = $this->client->imagine($payload);
@@ -141,37 +130,6 @@ class Midjourney extends Controller
         return $this->success('状态已更新', $task->toArray());
     }
 
-    public function uploadImage(Request $request)
-    {
-        $file = $request->file('image');
-        if (!$file) {
-            return $this->error('未检测到上传图片');
-        }
-
-        $savePath = ROOT_PATH . 'public' . DIRECTORY_SEPARATOR . 'uploads';
-        if (!is_dir($savePath) && !mkdir($savePath, 0755, true) && !is_dir($savePath)) {
-            return $this->error('上传目录创建失败');
-        }
-
-        $info = $file->validate([
-            'size' => 10 * 1024 * 1024,
-            'ext' => 'jpg,jpeg,png,gif,webp,avif',
-        ])->move($savePath);
-
-        if (!$info) {
-            return $this->error($file->getError() ?: '图片上传失败');
-        }
-
-        $relativePath = '/uploads/' . str_replace('\\', '/', $info->getSaveName());
-        $url = rtrim($request->domain(), '/') . $relativePath;
-
-        return $this->success('上传成功', [
-            'url' => $url,
-            'path' => $relativePath,
-            'name' => $info->getFilename(),
-        ]);
-    }
-
     protected function buildActionPayload($action, array $data)
     {
         if (empty($data['task_id'])) {
@@ -192,9 +150,8 @@ class Midjourney extends Controller
             'action' => $action,
         ];
 
-        $options = $this->extractArray($data, 'options');
-        if (!empty($options)) {
-            $payload['options'] = $options;
+        if (!empty($data['options']) && is_array($data['options'])) {
+            $payload['options'] = $data['options'];
         }
 
         return $payload;
@@ -233,13 +190,11 @@ class Midjourney extends Controller
         if (!empty($custom)) {
             return $custom;
         }
-
         $configured = config('midjourney.callback_url');
-        if (empty($configured)) {
-            throw new HttpResponseException($this->error('未配置回调地址'));
+        if (!empty($configured)) {
+            return $configured;
         }
-
-        return $configured;
+        return request()->domain() . '/api/task/callback';
     }
 
     protected function requestData(Request $request)

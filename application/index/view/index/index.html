@@ -14,12 +14,8 @@
 
     <section class="panel">
         <h2>API 设置</h2>
-        <p>异步回调地址：<code>{$callbackUrl|default='未配置'}</code></p>
-        {if condition="!$callbackConfigured"}
-        <p class="alert">请在配置文件中设置 <code>midjourney.callback_url</code>，该地址会在任务提交时一并发送给 Midjourney 服务器用于回调。</p>
-        {else/}
+        <p>异步回调地址：<code>{$callbackUrl|default=''}</code></p>
         <p>请在 Midjourney 管理后台配置该回调地址以获取最新任务状态。</p>
-        {/if}
     </section>
 
     <section class="panel">
@@ -54,151 +50,9 @@
                     <label for="notify_hook">自定义回调地址</label>
                     <input type="url" id="notify_hook" name="notify_hook" placeholder="可覆盖默认回调地址" />
                 </div>
-
                 <div class="form-row">
-                    <label>提示参数快捷设置</label>
-                    <div class="option-groups">
-                        <div class="options-grid">
-                            <div class="option-field">
-                                <label for="option-aspect-ratio">比例 (-ar)</label>
-                                <select id="option-aspect-ratio" data-option-key="aspect_ratio" data-option-alias="ar">
-                                    <option value="">默认</option>
-                                    <option value="1:1">1:1</option>
-                                    <option value="16:9">16:9</option>
-                                    <option value="9:16">9:16</option>
-                                    <option value="3:2">3:2</option>
-                                    <option value="2:3">2:3</option>
-                                    <option value="4:5">4:5</option>
-                                    <option value="5:4">5:4</option>
-                                    <option value="21:9">21:9</option>
-                                    <option value="4:3">4:3</option>
-                                    <option value="3:4">3:4</option>
-                                </select>
-                            </div>
-                            <div class="option-field">
-                                <label for="option-model-version">模型版本 (-v)</label>
-                                <select id="option-model-version" data-option-key="version" data-option-alias="v">
-                                    <option value="">默认</option>
-                                    <option value="5.2">5.2</option>
-                                    <option value="5.1">5.1</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="niji 6">Niji 6</option>
-                                    <option value="niji 5">Niji 5</option>
-                                    <option value="niji 4">Niji 4</option>
-                                    <option value="niji 3">Niji 3</option>
-                                    <option value="test">test</option>
-                                    <option value="testp">testp</option>
-                                </select>
-                            </div>
-                            <div class="option-field">
-                                <label for="option-quality">质量 (-q)</label>
-                                <select id="option-quality" data-option-key="quality" data-option-alias="q">
-                                    <option value="">默认</option>
-                                    <option value="0.25">0.25</option>
-                                    <option value="0.5">0.5</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                </select>
-                            </div>
-                            <div class="option-field">
-                                <label for="option-style">风格 (-style)</label>
-                                <select id="option-style" data-option-key="style">
-                                    <option value="">默认</option>
-                                    <option value="raw">RAW</option>
-                                    <option value="4a">4a</option>
-                                    <option value="4b">4b</option>
-                                    <option value="cute">cute</option>
-                                    <option value="scenic">scenic</option>
-                                </select>
-                            </div>
-                            <div class="option-field">
-                                <label for="option-stylize">风格化 (-stylize)</label>
-                                <select id="option-stylize" data-option-key="stylize" data-option-alias="s" data-option-type="int">
-                                    <option value="">默认</option>
-                                    <option value="0">0</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="250">250</option>
-                                    <option value="750">750</option>
-                                    <option value="1000">1000</option>
-                                </select>
-                            </div>
-                            <div class="option-field">
-                                <label for="option-chaos">随机性 (-chaos)</label>
-                                <input type="number" id="option-chaos" min="0" max="100" step="1" placeholder="0-100" data-option-key="chaos" data-option-type="int" />
-                            </div>
-                            <div class="option-field">
-                                <label for="option-seed">种子 (-seed)</label>
-                                <input type="number" id="option-seed" min="0" step="1" placeholder="留空为随机" data-option-key="seed" data-option-type="int" />
-                            </div>
-                            <div class="option-field">
-                                <label for="option-stop">提前停止 (-stop)</label>
-                                <input type="number" id="option-stop" min="10" max="100" step="5" placeholder="10-100" data-option-key="stop" data-option-type="int" />
-                            </div>
-                            <div class="option-field">
-                                <label for="option-weird">怪异度 (-weird)</label>
-                                <input type="number" id="option-weird" min="0" max="3000" step="50" placeholder="0-3000" data-option-key="weird" data-option-type="int" />
-                            </div>
-                            <div class="option-field">
-                                <label for="option-image-weight">图像权重 (-iw)</label>
-                                <input type="number" id="option-image-weight" min="0" max="2" step="0.1" placeholder="0-2" data-option-key="image_weight" data-option-alias="iw" data-option-type="float" />
-                            </div>
-                        </div>
-                        <div class="toggle-list">
-                            <label class="toggle">
-                                <input type="checkbox" id="option-tile" data-option-key="tile" data-option-type="boolean" />
-                                <span>平铺 (--tile)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-turbo" data-option-key="turbo" data-option-type="boolean" />
-                                <span>Turbo 模式 (--turbo)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-niji" data-option-key="niji" data-option-type="boolean" />
-                                <span>Niji 模式 (--niji)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-fast" data-option-key="fast" data-option-type="boolean" />
-                                <span>Fast 模式 (--fast)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-relax" data-option-key="relax" data-option-type="boolean" />
-                                <span>Relax 模式 (--relax)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-uplight" data-option-key="uplight" data-option-type="boolean" />
-                                <span>Light Upscale (--uplight)</span>
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="option-upbeta" data-option-key="upbeta" data-option-type="boolean" />
-                                <span>Beta Upscale (--upbeta)</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label for="custom-options">附加参数 (JSON)</label>
-                    <textarea id="custom-options" rows="3" placeholder='{"sameseed": 123}'></textarea>
-                    <p class="option-hint">可填写任意官方支持的额外参数，提交时会与上方选项合并。</p>
-                </div>
-
-                <div class="form-row">
-                    <label>垫图 / 图片参考 (-url)</label>
-                    <div class="image-uploader">
-                        <div class="image-upload-row">
-                            <input type="file" id="image-file" accept="image/*" />
-                            <button type="button" id="image-clear" class="link-button small">清空列表</button>
-                        </div>
-                        <p class="option-hint">支持本地上传或粘贴远程图片地址，提交时会自动作为 `--url` 传递。</p>
-                        <div class="image-upload-row">
-                            <input type="url" id="image-url-input" placeholder="https://..." />
-                            <button type="button" id="image-url-add" class="secondary-button">添加 URL</button>
-                        </div>
-                        <ul id="image-url-list" class="image-url-list"></ul>
-                        <p id="image-upload-status" class="option-hint"></p>
-                    </div>
+                    <label for="options">自定义参数(JSON)</label>
+                    <textarea id="options" name="options" rows="3" placeholder='{"aspect_ratio":"16:9"}'></textarea>
                 </div>
             </div>
             <div class="form-row buttons">

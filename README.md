@@ -56,6 +56,15 @@
 
 ## 目录结构
 
+
+   ```bash
+   php think run
+   ```
+
+   访问 `http://127.0.0.1:8000` 即可使用可视化控制台。
+
+## 目录结构
+
 ```
 ├── application
 │   ├── api
@@ -89,6 +98,40 @@
 │       └── js/app.js
 └── composer.json
 ```
+├── application
+│   ├── api
+│   │   └── controller
+│   │       └── Midjourney.php        # API 控制器，封装任务提交、回调、查询
+│   ├── common
+│   │   ├── model
+│   │   │   └── MjTask.php            # 数据模型
+│   │   ├── service
+│   │   │   └── MidjourneyClient.php  # 调用 Midjourney API 的封装
+│   │   └── validate
+│   │       └── MjTaskValidate.php    # 表单校验
+│   ├── index
+│   │   ├── controller
+│   │   │   └── Index.php             # 可视化页面
+│   │   └── view
+│   │       └── index
+│   │           └── index.html        # 前端页面模板
+│   ├── config.php                    # 全局配置
+│   ├── database.php                  # 数据库配置
+│   ├── route.php                     # 路由定义
+│   └── extra
+│       └── midjourney.php            # Midjourney 配置
+├── database
+│   └── migrations
+│       └── 20240101000000_create_mj_tasks_table.php
+├── public
+│   ├── index.php                     # 入口文件
+│   └── static
+│       ├── css/app.css
+│       └── js/app.js
+└── composer.json
+```
+
+## 回调示例
 
 ## 回调示例
 
