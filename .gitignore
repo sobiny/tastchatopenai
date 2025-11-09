@@ -5,3 +5,4 @@ database/*.sqlite
 /.vscode/
 .DS_Store
 .env
+/public/uploads/

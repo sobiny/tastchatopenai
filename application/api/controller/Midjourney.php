@@ -214,6 +214,35 @@ class Midjourney extends Controller
         return $decoded;
     }
 
+    protected function extractArray(array $data, $key)
+    {
+        if (!isset($data[$key]) || $data[$key] === '') {
+            return [];
+        }
+        if (is_array($data[$key])) {
+            return $data[$key];
+        }
+        if (is_string($data[$key])) {
+            $decoded = json_decode($data[$key], true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return [];
+    }
+
+    protected function normalizeImageUrls(array $data)
+    {
+        $urls = $this->extractArray($data, 'image_urls');
+        if (!empty($urls)) {
+            return array_values(array_filter(array_unique(array_map('trim', $urls))));
+        }
+        if (!empty($data['image_url']) && is_string($data['image_url'])) {
+            return [trim($data['image_url'])];
+        }
+        return [];
+    }
+
     protected function success($message, $data = null, $code = 200)
     {
         return json([
